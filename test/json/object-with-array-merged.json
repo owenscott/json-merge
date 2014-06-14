@@ -1,0 +1,41 @@
+{
+	"a": {
+		"one":1,
+		"two": [2,3]
+	},
+	"b": {
+		"one":1,
+		"two": [2,3]
+	},
+	"merge": {
+		"one": {
+			"match":true,
+			"source":"MATCH",
+			"value": 1,
+			"cleanValue":"",
+			"deleted": false
+		}
+	},
+	"arrays" :{
+		"two" :{
+			"a": [],
+			"b": [],
+			"merge": [
+				{
+					"match": true,
+					"source": "MATCH",
+					"deleted": false,
+					"value": 2,
+					"cleanValue": ""
+				},
+				{
+					"match": true,
+					"source": "MATCH",
+					"deleted": false,
+					"value": 3,
+					"cleanValue": ""
+				}
+			]
+		}
+	}
+}

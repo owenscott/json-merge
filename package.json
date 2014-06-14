@@ -1,0 +1,19 @@
+{
+  "name": "json-merge",
+  "version": "0.0.1",
+  "description": "A module for manually merging json records as part of a double-blind coding process.",
+  "main": "app.js",
+  "scripts": {
+    "test": "node test/test.js | tap-spec"
+  },
+  "author": "Owen Scott (owen.m.scott@gmail.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "tap": "~0.4.11",
+    "tape": "~2.13.3",
+    "tap-spec": "~0.2.0"
+  },
+  "dependencies": {
+    "underscore": "~1.6.0"
+  }
+}
