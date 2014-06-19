@@ -5,6 +5,7 @@ This programs compares JSON objects and prints out a diff as a first step in an 
 ## Installation
 
 	$ git clone https://github.com/owenscott/json-merge
+	$ npm install
 
 	var merge = require('./json-merge');
 
