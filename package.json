@@ -1,5 +1,5 @@
 {
-  "name": "json-merge",
+  "name": "json-premerge",
   "version": "0.0.1",
   "description": "A module for manually merging json records as part of a double-blind coding process.",
   "main": "app.js",
