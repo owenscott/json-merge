@@ -1,26 +1,30 @@
 {
-	"a": {
-		"one":1,
-		"two":2
-	},
-	"b": {
-		"one":1,
-		"two":2
-	},
-	"merge": {
-		"one": {
-			"match":true,
-			"source":"MATCH",
-			"value": 1,
-			"cleanValue":"",
-			"deleted": false
-		},
-		"two": {
-			"match":true,
-			"source":"MATCH",
-			"value": 2,
-			"cleanValue":"",
-			"deleted": false
+	"keyValuePairs": {
+		"originals": [
+			{
+				"one":1,
+				"two":2
+			},
+			{
+				"one":1,
+				"two":2
+			}
+		],
+		"merge": {
+				"one": {
+				"match":true,
+				"source":"MATCH",
+				"value": 1,
+				"cleanValue":"",
+				"deleted": false
+			},
+				"two": {
+				"match":true,
+				"source":"MATCH",
+				"value": 2,
+				"cleanValue":"",
+				"deleted": false
+			}
 		}
 	}
 }

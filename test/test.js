@@ -38,7 +38,6 @@ test('premerge works on simple flat matching objects', function(t) {
 		var expectedResult = readJsonFile('./test/json/simple-object-merged.json');
 
 		if (err) {throw err};
-
 		t.deepEqual(res, expectedResult, 'basic form is correct and all required keys are present' )
 	
 	});
@@ -69,12 +68,12 @@ test('object returned premerge differentiates properly between matches and non-m
 
 		if (err) throw err;
 
-		t.equal(res.merge.one.match, true, 'match=true for matching values');
-		t.equal(res.merge.one.value, 1, 'value is correct for matching values');
-		t.equal(res.merge.one.source, 'MATCH', 'source="MATCH" for matching values');
-		t.equal(res.merge.two.match, false, 'match=false for non-matching value');
-		t.false(res.merge.two.value, 'value is falsy for non-matching values');
-		t.false(res.merge.two.source, 'source is falsy for non-matching values');
+		t.equal(res.keyValuePairs.merge.one.match, true, 'match=true for matching values');
+		t.equal(res.keyValuePairs.merge.one.value, 1, 'value is correct for matching values');
+		t.equal(res.keyValuePairs.merge.one.source, 'MATCH', 'source="MATCH" for matching values');
+		t.equal(res.keyValuePairs.merge.two.match, false, 'match=false for non-matching value');
+		t.false(res.keyValuePairs.merge.two.value, 'value is falsy for non-matching values');
+		t.false(res.keyValuePairs.merge.two.source, 'source is falsy for non-matching values');
 
 	})
 
@@ -121,14 +120,13 @@ test('premerge works with arrays that do not match', function(t) {
 
 	testArr = [testObj1, testObj2];
 
-	t.plan(4);
+	t.plan(3);
 
 	premerge(testArr, function(err, res) {
 
-		t.deepEqual (res.arrays.arr.a, [1,3], 'leftover values are still in first array');
-		t.equal (res.arrays.arr.b.length, 0, 'no values are left in second array');
-		t.equal (res.arrays.arr.merge.length, 1, 'merged array has length 1');
-		t.equal (res.arrays.arr.merge[0].value, 2, 'value of merged array member is correct');
+		t.deepEqual (res.arrays.originals, [[1,2,3],[2]], 'original arrays are still correct');
+		t.equal (res.arrays.merge.length, 1, 'merged array has length 1');
+		t.equal (res.arrays.merge[0].value, 2, 'value of merged array member is correct');
 
 	})
 

@@ -1,7 +1,74 @@
+//TODO: lots of duplicated code that is prime for refactoring
+
 var _ = require('underscore'),
 	createMergedObject;
 
-createMergedObject = function(value) {
+
+module.exports = function(data, callback) {
+
+	var err,
+	dataKeys = [],
+	key,
+	result = {};
+
+	//get all keys that are present in the objects provided
+	_.each(data, function(d) {
+		dataKeys = _.uniq(dataKeys.concat(_.keys(d)));
+	});
+
+	//go through each of the matching keys
+	dataKeys.forEach( function(key) {
+
+		var values,
+			uniqueValues,
+			valueIsArray;
+
+		values = _.compact(_.pluck(data, key));
+		uniqueValues = _.uniq(values);
+
+		valueIsArray = _.chain(values).map(function(v) {return _.isArray(v)}).uniq().value();
+
+		//check if it has both arrays and non-arrays
+		if (valueIsArray.length > 1) {
+			//TODO: convert non-arrays to arrays
+			throw new Error('Key ' + key + ' has mix of array and non-array values.');
+		}
+		else if (valueIsArray[0] === true) {
+
+			//=====================HANDLING FOR ARRAYS===========================
+			result = mergeKeyWithArrays({
+				data:data,
+				key:key,
+				values:values,
+				result:result
+			});
+			//===================================================================
+
+		}
+
+		else {
+
+			//=====================HANDLING FOR KVPs=============================
+			result = mergeKeyWithValues({
+				data:data,
+				key:key,
+				values:values,
+				uniqueValues:uniqueValues,
+				result:result
+			});
+			//===================================================================
+
+		}
+		
+	});
+
+	//run the user-supplied callback with the result
+	setImmediate(callback, err || null, result );
+
+}
+
+
+function createMergedObject(value) {
 	
 	var mergedObj = {
 		match:false,
@@ -22,81 +89,69 @@ createMergedObject = function(value) {
 }
 
 
-module.exports = function(data, callback) {
+function mergeKeyWithValues(input) {
 
-	var err,
-	matchingKeys,
-	k,
-	i,
-	key,
-	aVal,
-	bVal,
-	mergeArray,
-	intersection,
-	aDif,
-	bDif,
-	result = {};
+	var	data = input.data,
+		key = input.key,
+		values = input.values,
+		uniqueValues = input.uniqueValues,
+		result = input.result
 
-	//data should be a length 2 array which contains the objects to be compared
-	if (data.length !== 2 ) {
-		err = new Error('Premerge not called with a length 2 array.');
-	} 
+	result.keyValuePairs = result.keyValuePairs || {};
+	result.keyValuePairs.merge = result.keyValuePairs.merge || {};
+	result.keyValuePairs.originals = result.keyValuePairs.originals || [];
+	
+	//store original values
+	data.forEach(function(d, i , data) {
+		result.keyValuePairs.originals[i] = result.keyValuePairs.originals[i] || {};
+		result.keyValuePairs.originals[i][key] = d[key];
+	})
 
-	result.a = _.clone(data[0]);
-	result.b = _.clone(data[1]);
-	result.merge = {};
+	//check if no values
+	if (values.length === 0) {
 
-	//only care about matching keys, since expecting identically structured objects
-	matchingKeys = _.union( _.keys(result.a), _.keys(result.b) );
+	}
+	//check if only one value
+	else if (values.length === 1) {
 
-	//TODO: if structure of input objects isn't the same throw an error
-
-	//go through each of the matching keys
-	for (k in matchingKeys) {
-
-		//setup aVal and bVal as values to be compared
-		key = matchingKeys[k];
-		aVal = result.a[matchingKeys[k]];
-		bVal = result.b[matchingKeys[k]];
-
-		//special handling it it's an array
-		if ( Array.isArray(aVal) || Array.isArray(bVal) )  {
-			//throw an error if one isn't an array
-			if ( !Array.isArray(aVal) || !Array.isArray(bVal) ) {
-				err = new Error('Objects have a matching key where only one value is an array');
-			}
-			else {
-				result.arrays = result.arrays || {};
-				result.arrays[key] = {};
-				mergeArray = []
-				intersection = _.intersection(aVal, bVal);
-				// aDif = _.difference(aVal, bVal);
-				// bDif = _.difference(bVal, aVal);
-				for (i in intersection) {
-					mergeArray.push(createMergedObject(intersection[i]));
-				}
-				result.arrays[key].merge = _.clone(mergeArray);
-				result.arrays[key].a = _.difference (aVal, _.pluck(mergeArray, 'value'));
-				result.arrays[key].b = _.difference (bVal, _.pluck(mergeArray, 'value'));	
-				//TODO: handle things
-			}
-		}
-		//otherwise if it's an object or literal check for equality
-		else {
-			if ( aVal === bVal || _.isEqual(aVal, bVal) ) {
-				result.merge[key] = createMergedObject(aVal);
-			}
-			else {
-				result.merge[key] = createMergedObject();
-			}
-		}
+	}
+	//check if all the values are the same
+	else if (uniqueValues.length === 1) {
+		result.keyValuePairs.merge[key] = createMergedObject(_.clone(uniqueValues)[0])
+	}
+	//assume that values exist but aren't matched
+	else {
+		result.keyValuePairs.merge[key] = createMergedObject();
 	}
 
-	setImmediate(callback, err || null, result );
+	return result;
 
 }
 
 
+function mergeKeyWithArrays(input) {
 
+	var	data = input.data,
+		key = input.key,
+		values = input.values,
+		result = input.result,
+		uniqueValues;
 
+	result.arrays = result.arrays || {};
+	result.arrays.merge = result.arrays.merge || [];
+	result.arrays.originals = result.arrays.originals || [];
 
+	//push values that appear in every array into the match array
+	uniqueValues = _.intersection.apply(this, values);
+	uniqueValues.forEach(function(value) {
+		result.arrays.merge.push(createMergedObject(value));
+	})
+
+	//push all arrays into the originals array
+	values.forEach(function(value) {
+		result.arrays.originals.push(value);
+	})
+
+	return result;
+
+}
