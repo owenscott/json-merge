@@ -132,3 +132,34 @@ test('premerge works with arrays that do not match', function(t) {
 
 
 })
+
+
+test('premerge works when there is only one value', function(t) {
+
+	var testObj1,
+		testObj2,
+		testArr;
+
+	testObj1 = {
+		foo:'bar'
+	}
+
+	testObj2 = {
+		foo:''
+	}
+
+	testArr = [testObj1, testObj2];
+
+	t.plan(4);
+
+	premerge(testArr, function(err, res) {
+
+		t.deepEqual(res.keyValuePairs.originals, [{foo:'bar'},{foo:''}], 'Originals array is still correct.')
+		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge array has the correct length');
+		t.equal(res.keyValuePairs.merge.foo.source, 0, 'Source is the array that originally had the value');
+		t.equal(res.keyValuePairs.merge.foo.match, false, 'Match is false');
+
+	})
+
+
+})

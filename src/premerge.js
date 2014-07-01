@@ -68,8 +68,10 @@ module.exports = function(data, callback) {
 }
 
 
-function createMergedObject(value) {
-	
+function createMergedObject(value, source) {
+
+
+
 	var mergedObj = {
 		match:false,
 		source:'',
@@ -80,8 +82,13 @@ function createMergedObject(value) {
 
 	if (value) {
 		mergedObj.match = true;
-		mergedObj.source = 'MATCH';
 		mergedObj.value = value;
+		mergedObj.source = 'MATCH';
+	}
+
+	if (source >= 0) {
+		mergedObj.match = false;
+		mergedObj.source = source;
 	}
 
 	return mergedObj;
@@ -95,7 +102,8 @@ function mergeKeyWithValues(input) {
 		key = input.key,
 		values = input.values,
 		uniqueValues = input.uniqueValues,
-		result = input.result
+		result = input.result,
+		source;
 
 	result.keyValuePairs = result.keyValuePairs || {};
 	result.keyValuePairs.merge = result.keyValuePairs.merge || {};
@@ -113,7 +121,12 @@ function mergeKeyWithValues(input) {
 	}
 	//check if only one value
 	else if (values.length === 1) {
-
+		data.forEach(function(d, i) {
+			if (d[key]) {
+				source = i;
+			}
+		})
+		result.keyValuePairs.merge[key] = createMergedObject(_.clone(values)[0], source)
 	}
 	//check if all the values are the same
 	else if (uniqueValues.length === 1) {
