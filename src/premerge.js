@@ -117,7 +117,7 @@ function mergeKeyWithValues(input) {
 
 	//check if no values
 	if (values.length === 0) {
-
+		result.keyValuePairs.merge[key] = createMergedObject();
 	}
 	//check if only one value
 	else if (values.length === 1) {

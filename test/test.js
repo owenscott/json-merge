@@ -150,7 +150,7 @@ test('premerge works when there is only one value', function(t) {
 
 	testArr = [testObj1, testObj2];
 
-	t.plan(4);
+	t.plan(5);
 
 	premerge(testArr, function(err, res) {
 
@@ -158,6 +158,38 @@ test('premerge works when there is only one value', function(t) {
 		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge array has the correct length');
 		t.equal(res.keyValuePairs.merge.foo.source, 0, 'Source is the array that originally had the value');
 		t.equal(res.keyValuePairs.merge.foo.match, false, 'Match is false');
+		t.equal(res.keyValuePairs.merge.foo.value, 'bar', 'Value is equal to the one provided value.')
+
+	})
+
+
+})
+
+test('premerge works when there are no values', function(t) {
+
+	var testObj1,
+		testObj2,
+		testArr;
+
+	testObj1 = {
+		foo:''
+	}
+
+	testObj2 = {
+		foo:''
+	}
+
+	testArr = [testObj1, testObj2];
+
+	t.plan(5);
+
+	premerge(testArr, function(err, res) {
+
+		t.deepEqual(res.keyValuePairs.originals, [{foo:''},{foo:''}], 'Originals array is still correct.')
+		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge array has the correct length');
+		t.equal(res.keyValuePairs.merge.foo.match, false, 'Match is false');
+		t.equal(res.keyValuePairs.merge.foo.value, '', 'Value is empty');
+		t.equal(res.keyValuePairs.merge.foo.source, '', 'Source is empty');
 
 	})
 
