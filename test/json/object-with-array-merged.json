@@ -19,25 +19,29 @@
 		}
 	},
 	"arrays" :{
-		"originals":[
-			[2,3],
-			[2,3]
-		],
-		"merge":[
-			{
-				"match": true,
-				"source": "MATCH",
-				"deleted": false,
-				"value": 2,
-				"cleanValue": ""
-			},
-			{
-				"match": true,
-				"source": "MATCH",
-				"deleted": false,
-				"value": 3,
-				"cleanValue": ""
-			}
-		]
+		"originals":{
+			"two":[
+				[2,3],
+				[2,3]
+			]
+		},
+		"merge":{
+			"two":[
+				{
+					"match": true,
+					"source": "MATCH",
+					"deleted": false,
+					"value": 2,
+					"cleanValue": ""
+				},
+				{
+					"match": true,
+					"source": "MATCH",
+					"deleted": false,
+					"value": 3,
+					"cleanValue": ""
+				}
+			]
+		}
 	}
 }

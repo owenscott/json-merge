@@ -124,9 +124,9 @@ test('premerge works with arrays that do not match', function(t) {
 
 	premerge(testArr, function(err, res) {
 
-		t.deepEqual (res.arrays.originals, [[1,2,3],[2]], 'original arrays are still correct');
-		t.equal (res.arrays.merge.length, 1, 'merged array has length 1');
-		t.equal (res.arrays.merge[0].value, 2, 'value of merged array member is correct');
+		t.deepEqual (res.arrays.originals.arr, [[1,2,3],[2]], 'original arrays are still correct');
+		t.equal (res.arrays.merge.arr.length, 1, 'merged array has length 1');
+		t.equal (res.arrays.merge.arr[0].value, 2, 'value of merged array member is correct');
 
 	})
 

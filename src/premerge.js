@@ -151,18 +151,20 @@ function mergeKeyWithArrays(input) {
 		uniqueValues;
 
 	result.arrays = result.arrays || {};
-	result.arrays.merge = result.arrays.merge || [];
-	result.arrays.originals = result.arrays.originals || [];
+	result.arrays.merge = result.arrays.merge || {};
+	result.arrays.merge[key] = result.arrays.merge[key] || [];
+	result.arrays.originals = result.arrays.originals || {};
+	result.arrays.originals[key] = result.arrays.originals[key] || [];
 
 	//push values that appear in every array into the match array
 	uniqueValues = _.intersection.apply(this, values);
 	uniqueValues.forEach(function(value) {
-		result.arrays.merge.push(createMergedObject(value));
+		result.arrays.merge[key].push(createMergedObject(value));
 	})
 
 	//push all arrays into the originals array
 	values.forEach(function(value) {
-		result.arrays.originals.push(value);
+		result.arrays.originals[key].push(value);
 	})
 
 	return result;
