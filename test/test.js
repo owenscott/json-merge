@@ -186,7 +186,7 @@ test('premerge works when there are no values', function(t) {
 	premerge(testArr, function(err, res) {
 
 		t.deepEqual(res.keyValuePairs.originals, [{foo:''},{foo:''}], 'Originals array is still correct.')
-		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge array has the correct length');
+		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge object has the correct length');
 		t.equal(res.keyValuePairs.merge.foo.match, false, 'Match is false');
 		t.equal(res.keyValuePairs.merge.foo.value, '', 'Value is empty');
 		t.equal(res.keyValuePairs.merge.foo.source, '', 'Source is empty');
@@ -194,4 +194,32 @@ test('premerge works when there are no values', function(t) {
 	})
 
 
+})
+
+test('values which are \'falsy\' are still merged in', function(t) {
+	var testObj1,
+		testObj2,
+		testArr;
+
+	testObj1 = {
+		bool:false
+	}
+
+	testObj2 = {
+		bool:false
+	}
+
+	testArr = [testObj1, testObj2];
+
+	t.plan(5);
+
+	premerge(testArr, function(err, res) {
+
+		t.deepEqual(res.keyValuePairs.originals, [{bool:false},{bool:false}], 'Originals array is still correct.')
+		t.equal(_.keys(res.keyValuePairs.merge).length, 1, 'Merge object has the correct length')
+		t.equal(res.keyValuePairs.merge.bool.match, true, 'Match is true');
+		t.equal(res.keyValuePairs.merge.bool.value, false, 'Value is correct (false)');
+		t.equal(res.keyValuePairs.merge.bool.source, 'MATCH', 'Source is \'MATCH\'');
+
+	})
 })

@@ -23,7 +23,8 @@ module.exports = function(data, callback) {
 			uniqueValues,
 			valueIsArray;
 
-		values = _.compact(_.pluck(data, key));
+		// values = _.compact(_.pluck(data, key));
+		values = _.chain(data).pluck(key).difference(['']).value();
 		uniqueValues = _.uniq(values);
 
 		valueIsArray = _.chain(values).map(function(v) {return _.isArray(v)}).uniq().value();
@@ -80,7 +81,7 @@ function createMergedObject(value, source) {
 		deleted: false
 	}
 
-	if (value) {
+	if (value || value === false) {
 		mergedObj.match = true;
 		mergedObj.value = value;
 		mergedObj.source = 'MATCH';
@@ -119,6 +120,7 @@ function mergeKeyWithValues(input) {
 	if (values.length === 0) {
 		result.keyValuePairs.merge[key] = createMergedObject();
 	}
+
 	//check if only one value
 	else if (values.length === 1) {
 		data.forEach(function(d, i) {
